@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<style>
+    body{
+        background-image: url('https://wallpaper.dog/large/20512813.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;   
+        margin: 0;
+        border: 0;
+    }
+    h3{
+        color:white;
+    }
+    #basvur{
+        color:black;
+    }
+    #basvur:hover{
+        background-color: blue;
+        color:white;
+    }
+</style>
+<h3>{{event.event_name}}</h3>
+<img src="{{event.event_photo}}" style="margin-bottom:15px;">
+<div>
+    <textarea name="" id="" cols="100" rows="20" readonly>
+        {{event.event_description}}
+    </textarea>
+
+    {% if session["same_id"] %}
+    <div>
+        <a href="#" class="btn btn-danger">Başvuruldu</a>
+        <a href="/basvuruiptal/{{event.id}}" class="btn btn-primary">İptal Et</a>
+    </div>
+    {% else %}
+        <div>
+            <a href="/etkinlikbasvur/{{event.id}}" class="btn btn-success" id="basvur">Başvur</a>
+        </div>
+    {% endif %}
+
+    
+</div>
+{% endblock %}

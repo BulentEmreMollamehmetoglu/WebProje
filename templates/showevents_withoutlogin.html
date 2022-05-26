@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<style>
+    @import url('https://www.teahub.io/photos/full/39-390077_college-graduate-with-diploma.jpg');
+    body{
+        background-image: url('https://www.teahub.io/photos/full/39-390077_college-graduate-with-diploma.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;   
+        margin: 0;
+        border: 0;
+    }
+.button {
+    display: inline-block;
+    padding: 5px 25px;
+    font-size: 18px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 9px #999;
+      }
+
+
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+</style>
+
+
+<h3 >Etkinlikler</h3>
+<hr>
+
+<br>
+
+{% if events %}
+
+    <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Şirket</th>
+                    <th scope="col">Etkinlik Adı</th>
+                    <th scope="col">Zaman</th>
+                    <th scope="col">Başlangıç Tarihi</th>
+                    <th scope="col">Bitiş Tarihi</th>
+                    <th scope="col">Mekan</th>
+                    <th scope="col">Konuşmacılar</th>
+                    
+                </tr>
+            </thead>
+                  
+        {% for event in events %}
+            <tbody>
+                <tr>
+
+                    <td>{{event.event_company}}</td>
+                    <td>{{event.event_name}}</td>
+                    <!-- <td><textarea name="" id="" cols="30" rows="10">{{event.event_description}}</textarea></td> -->
+                    <td>{{event.event_time}}</td>
+                    <td>{{event.event_start_time}}</td>
+                    <td>{{event.event_finish_time}}</td>
+                    <td>{{event.event_place}}</td>
+                    <td>{{event.event_speakers}}</td>
+                    <td>
+                        <a href="/showevent/{{event.id}}" class="btn btn-success">Görüntüle</a>
+                    </td>
+                    
+                </tr>
+            </tbody>
+        {% endfor %}
+    </table>
+
+{% else %}
+<div class="alert alert-danger">Bu blokta henüz bir etkinlik bulunmamaktadır </div>
+{% endif %}
+
+
+
+{% endblock %}  

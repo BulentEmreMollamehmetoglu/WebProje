@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<h3>Bilgierimi Güncelle</h3>
+
+
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+      <div class="card card-body">
+        <form action="/updatestudent/{{user.id}}" method="POST">
+                Ad<br>
+                <input type = "text" name = "name" value="{{user.name}}" class="form-control"/><br>
+
+                Soyasd<br>
+                <input type = "text" name = "surname" value="{{user.surname}}"  class="form-control"/><br>
+ 
+                Kullanıcı Adı<br>
+                <input type="text" name = "nickname" value="{{user.nickname}}"  class="form-control"><br>
+ 
+                Mail<br>
+                <input type = "text" name = "email" value="{{students.email}}"  class="form-control"/><br>
+ 
+                Şifre<br>
+                <input type = "password" name = "password" value="{{students.password}}"  class="form-control"/><br>
+ 
+                Bölüm<br>
+                <input type = "text" name = "major" value="{{students.major}}"  class="form-control"/><br> 
+
+                Üniversite<br>
+                <input type = "text" name = "university" value="{{students.university}}"  class="form-control"/><br>
+                
+                Telefon Numarası<br>
+                <input type = "text" name = "phone_number" value="{{students.phone_number}}"  class="form-control"/><br>
+                
+                Şehir<br>
+                <input type = "text" name = "city" value="{{students.city}}"  class="form-control"/><br>
+                
+                Doğum Tarihi(18 yaşından küçük olanlar dikkate alınmayacaktır)<br>
+                <input type = "text" name = "birthday_year" value="{{students.birthday_year}}"  class="form-control"/><br>
+
+            <input type = "submit" value = "Güncelle" class="btn btn-success"/><br>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+{% endblock body %}

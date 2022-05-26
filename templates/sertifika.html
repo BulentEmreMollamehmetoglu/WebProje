@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block body %}
+<style>
+    body{
+        background-image: url('https://wallpaperaccess.com/full/5338445.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;   
+        margin: 0;
+        border: 0;
+    }
+    #namesurname{
+        font-size:25px;
+    }
+    p{
+        color:white;
+        font-size:17px;
+    }
+</style>
+    <div>
+        <p id="namesurname"><span style="margin-right:60%">{{adsoyad.name}} {{adsoyad.surname}}</span> <br>
+             <span style="color:rgb(255, 255, 255)">Sertifika Sayısı : {{sertifikasayi.sayi}}</span></p>
+        
+    </div>
+    <br>
+    <div>
+        {% for liste in listeler %}
+            <div style="border:solid;">
+                <p style="margin-left:10px">{{liste["event_company"]}}</p>
+                <p style="margin-left:10px">{{liste["event_name"]}}</p>
+                <p style="margin-left:10px">{{liste["event_time"]}}</p>
+                <a href="/sertifikagoruntule/{{session["id"]}}/{{liste["id"]}}" class="btn btn-success">Sertifikayı Görüntüle</a>
+                <br>
+            </div>
+            
+        {% endfor %}
+    </div>
+
+
+{% endblock %}

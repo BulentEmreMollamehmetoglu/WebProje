@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% from "includes/formhelpers.html" import render_field %}
+
+<h3>Bilgiler</h3>
+<hr>
+
+
+    <form method="post">
+    
+        {{ render_field(user_infos.name) }}
+        {{ render_field(user_infos.surname) }}
+        {{ render_field(user_infos.nickname) }}
+        {{ render_field(user_infos.email) }}
+        {{ render_field(user_infos.major) }}
+        {{ render_field(user_infos.university) }}
+        {{ render_field(user_infos.phone_number) }}
+        {{ render_field(user_infos.city) }}
+        {{ render_field(user_infos.birthday_year) }}
+        
+        <a href="/profile/user/edit_profile" class = "btn btn-dark">Bilgilerimi Güncelle</a>
+    </form>
+     
+         
+
+
+
+
+
+{% endblock %}

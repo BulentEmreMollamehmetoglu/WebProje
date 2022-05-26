@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block body %}
+
+    <div id = "parent">
+     
+        {% if session["logged_in"] %}
+        <style>
+            body{
+                background-image: url('https://wallpaper.dog/large/20513083.jpg');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;   
+                margin: 0;
+                border: 0;
+            }
+            h3{
+                margin-left: 85%;
+            }
+            #welcome{
+                color: white;
+                font-size: 24px;
+                margin-left: 2%;
+            }
+        </style>
+        <span id="welcome">Hoşgeldin "{{session["username"]}}"</span>
+        
+        
+        
+
+        {% else %}
+        <style>
+            body{
+                background-image: url('https://wallpaperaccess.com/full/643353.png');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;   
+                margin: 0;
+                border: 0;
+            }
+        </style>
+        <h3 style="text-align:center;color:white">HOBÜ'ye Hoşgeldiniz</h3>
+        <!-- <a href="/login" class="btn btn-primary" style="margin-top: 20px; width:100px;">Giriş</a>
+        <a href="/userregister" class="btn btn-primary" style="margin-top: 20px; width:100px;">Kayıt Ol</a> -->
+        {% endif %}
+        
+        <!-- <script >
+                const p = document.getElementById("message");          
+                const div = document.createElement("div");
+                div.className = "alert alert-success";
+                div.id = "successmessage";
+                div.role="alert";
+                div.textContent = "Başarıyla Giriş Yapıldı"
+                p.appendChild(div);
+                setTimeout(()=>{
+                    div.remove();
+                },2000);
+        </script> -->
+        
+    </div>
+   
+ 
+{% endblock %}

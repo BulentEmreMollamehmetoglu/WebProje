@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<style>
+  body{
+    background-image: url('https://wallpaperaccess.com/full/2441907.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;   
+    margin: 0;
+    border: 0;
+}
+.row{
+  margin-top:-81px;
+}
+</style>
+<div>
+  <h3>Hoşgeldin "{{session["username"]}}"</h3>
+  <br>
+</div>
+
+
+
+
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+      <h3>Profil Bilgileri</h3>
+      <div class="card card-body">
+        <form action="/profile/{{user.id}}" method="POST">
+                İsim<br>
+                <input type = "text" name = "name" value="{{user.name}}" class="form-control"/><br>
+
+                Soyisim<br>
+                <input type = "text" name = "surname" value="{{user.surname}}" class="form-control"/><br>
+
+                Kullanıcı Adı<br>
+                <input type = "text" name = "nickname" value="{{user.nickname}}" class="form-control"/><br>
+
+                Email<br>
+                <input type = "text" name = "email" value="{{user.email}}" class="form-control"/><br>
+
+                Şifre<br>
+                <input type = "password" name = "password" value="{{user.password}}" class="form-control"/><br>
+                
+                Bölüm<br>
+                <input type = "text" name = "major" value="{{user.major}}" class="form-control"/><br>
+                
+                Üniversite<br>
+                <input type = "text" name = "university" value="{{user.university}}" class="form-control"/><br>
+                
+                Telefon Numarası<br>
+                <input type = "text" name = "phone_number" value="{{user.phone_number}}" class="form-control"/><br>
+                
+                Şehir<br>
+                <input type = "text" name = "city" value="{{user.city}}" class="form-control"/><br>
+
+                Doğum Yılı<br>
+                <input type = "text" name = "birthday_year" value="{{user.birthday_year}}" class="form-control"/><br>
+
+            <input type = "submit" value = "Güncelle" class="button"/><br>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+
+
+
