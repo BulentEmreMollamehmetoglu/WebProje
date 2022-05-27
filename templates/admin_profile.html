@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<style>
+  body{
+    background-image: url('');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;   
+    margin: 0;
+    border: 0;
+}
+.row{
+  margin-top:-81px;
+}
+</style>
+<div>
+  <h3>Hoşgeldin "{{session["admin_username"]}}"</h3>
+  <br>
+</div>
+
+
+
+
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+      <h3>Yönetici Profil Bilgileri</h3>
+      <div class="card card-body">
+        <form action="/adminprofile/{{admin.id}}" method="POST">
+                İsim<br>
+                <input type = "text" name = "name" value="{{admin.name}}" class="form-control"/><br>
+
+                Soyisim<br>
+                <input type = "text" name = "surname" value="{{admin.surname}}" class="form-control"/><br>
+
+                Kullanıcı Adı<br>
+                <input type = "text" name = "username" value="{{admin.username}}" class="form-control"/><br>
+
+                Email<br>
+                <input type = "text" name = "email" value="{{admin.email}}" class="form-control"/><br>
+
+                Şifre<br>
+                <input type = "text" name = "password" value="{{admin.password}}" class="form-control"/><br>
+                
+                Pozisyon<br>
+                <input type = "text" name = "position" value="{{admin.position}}" class="form-control"/><br>
+                
+                Yönetici Numarası<br>
+                <input type = "text" name = "admin_number" value="{{admin.admin_number}}" class="form-control"/><br>
+                
+
+            <input type = "submit" value = "Güncelle" class="button"/><br>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+
+
+

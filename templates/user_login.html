@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block body %}
+{% from "includes/formhelpers.html" import render_field %}
+<h3 style="color:rgb(7, 7, 7)">Giriş Yap</h3>
+<hr>
+
+<style>
+    body{
+        background-image: url('https://miro.medium.com/max/1400/1*A4AZXGxmMSPgmoMzdmh98A.gif');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;   
+        margin: 0;
+        border: 0;
+    }
+    form{
+       display: flex;
+       flex-direction: column;
+       justify-content: center;
+       align-items: center;
+       margin-top: 150px;
+    }
+ </style>
+
+
+<form method="post" style="margin-bottom: 10px;">
+    
+    {{ render_field(form.username) }}
+    {{ render_field(form.password) }}
+
+    <button type="submit" class="btn btn-secondary">Giriş Yap</button>
+    <a href="/kullanicisifreyenile">Şifemi Unuttum</a>
+</form>
+
+
+
+{% endblock %}

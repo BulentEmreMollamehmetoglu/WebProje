@@ -16,13 +16,18 @@
             h3{
                 margin-left: 85%;
             }
-            #welcome{
+            .welcome{
                 color: white;
                 font-size: 24px;
                 margin-left: 2%;
             }
         </style>
-        <span id="welcome">Hoşgeldin "{{session["username"]}}"</span>
+        {% if session["admin_logged_in"] %}
+            <span class="welcome">Yönetici Giriş Yaptı</span>
+        {% else %}
+            <span class="welcome">Hoşgeldin "{{session["username"]}}"</span>
+        {% endif %}
+        
         
         
         

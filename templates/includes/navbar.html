@@ -9,23 +9,33 @@
         <li class="nav-item active">
           <a class="nav-link" href="#">Hakkımızda <span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Etkinlikler
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="/joinevent">Etkinliğe Katıl</a>
-            {% if session["id"] %}
-              <a class="dropdown-item" href="/sertifikalar/{{session.id}}">Sertifikalarım</a>
-            {% endif %}
-            {% if session["logged_in"] %}
-            
-            {% else %}
-              <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/showevents">Etkinlikler</a>
-              </div>
-            {% endif %}
-        </li>
+        {% if session["admin_logged_in"] %}
+          <li class="nav-item active">
+            <a class="nav-link" href="/joinevent">Etkinlikler</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/createevent">Etkinlik Oluştur</a>
+          </li>
+        {% else %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Etkinlikler
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="/joinevent">Etkinliğe Katıl</a>
+              {% if session["id"] %}
+                <a class="dropdown-item" href="/sertifikalar/{{session.id}}">Sertifikalarım</a>
+              {% endif %}
+              {% if session["logged_in"] %}
+              
+              {% else %}
+                <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/showevents">Etkinlikler</a>
+                </div>
+              {% endif %}
+          </li>
+        {% endif %}
+    
         
         <li class="nav-item active">
           <a class="nav-link" href="/companies">Şirketler</a>
@@ -35,19 +45,44 @@
 
       <ul class="navbar-nav ml-auto">
         {% if session["logged_in"] == True  %}
-          <li class="nav-item active">
-            <a class="nav-link" href="/profile/{{session.id}}">Profilim</a>
-          </li>
+          {% if session["admin_logged_in"] %}
+            <li class="nav-item active">
+              <a class="nav-link" href="/adminprofile/{{session.admin_id}}">Yönetici Profili</a>
+            </li>
+          {% else %}
+            <li class="nav-item active">
+              <a class="nav-link" href="/userprofile/{{session.id}}">Profilim</a>
+            </li>
+          {% endif %} 
           <li class="nav-item active">
             <a class="nav-link" href="/logout">Çıkış Yap</a>
           </li>
         {% else %}
-          <li class="nav-item active">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Giriş
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="/userlogin">Kullanıcı Giriş</a>
+            <a class="dropdown-item" href="/adminlogin">Yönetici Giriş</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Kayıt Ol
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <a class="dropdown-item" href="/userregister">Kullanıcı Kayıt</a>
+            <a class="dropdown-item" href="/adminregister">Yönetici Kayıt</a>
+          </div>
+        </li>
+          <!-- <li class="nav-item active">
             <a class="nav-link" href="/login">Giriş</a>
-          </li>
-          <li class="nav-item active">
+          </li> -->
+          <!-- <li class="nav-item active">
             <a class="nav-link" href="/userregister">Kayıt Ol</a>
-          </li>
+          </li> -->
         {% endif %}
       </ul>
       <!-- <form class="form-inline my-2 my-lg-0">

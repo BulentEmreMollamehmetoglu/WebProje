@@ -18,7 +18,7 @@ app.secret_key="erawebsite" #Flash mesajı işlemini yapabilmemiz için secret k
 app.config["MYSQL_HOST"] = "localhost"
 app.config["MYSQL_USER"] = "root"
 app.config["MYSQL_PASSWORD"] = ""
-app.config["MYSQL_DB"] = "hobu"
+app.config["MYSQL_DB"] = "hobu_2"
 app.config["MYSQL_CURSORCLASS"] = "DictCursor" #DictionaryCursor
 
 mysql = MySQL(app)
@@ -44,11 +44,6 @@ def mail_required(f):
             flash("Bu sayfayı görüntülemek için lütfen emailinizi girin","danger")
             return redirect(url_for("login"))
     return decorated_function
-
-
-@app.route('/register') #Burası sadece register sayfasını döndüren bir fonksiyondur
-def register():
-    return render_template('register.html')
 
 
 @app.route("/about")
@@ -78,22 +73,40 @@ class UserRegisterForm(Form):
     phone_number = StringField("Telefon Numarası",validators=[validators.DataRequired()])
     city = StringField("Şehir",validators=[validators.DataRequired()])
     birthday_year = StringField("Doğum Tarihi",validators=[validators.DataRequired()])
+    
+class AdminRegisterForm(Form):
+    name = StringField("Ad",validators=[validators.DataRequired()])
+    surname = StringField("Soyad",validators=[validators.DataRequired()])
+    username = StringField("Kullanıcı Adı",validators=[validators.Length(min=2,max=25),validators.DataRequired()]) #veya validators.input_required() da kullanabilirsin
+    email = StringField("Mail Adresi",validators=[validators.Length(min=2,max=25),validators.DataRequired()])
+    password = PasswordField("Parola",validators=[
+        validators.DataRequired(message="Lütfen bir parola belirleyin"),
+        validators.EqualTo(fieldname="confirm",message="Parolanız Uyuşmuyor...")
+    ])
+    confirm = PasswordField("Parola Doğrula")
+    position = StringField("Pozisyon",validators=[validators.DataRequired()])
+    admin_number = StringField("Yönetici Numarası",validators=[validators.DataRequired()])
+
+class LoginForm(Form):
+    username = StringField("Ad",validators=[validators.DataRequired()])
+    password = password = PasswordField("Parola")
+
+class EventForm(Form):
+    event_company = StringField("Şirket Adı",validators=[validators.DataRequired()])
+    event_name = StringField("Etkinlik Adı",validators=[validators.DataRequired()])
+    event_description = TextAreaField("Etkinlik Açıklaması",validators=[validators.DataRequired()])
+    event_time = StringField("Tarih",validators=[validators.DataRequired()])
+    event_start_time = StringField("Başlama Saati",validators=[validators.DataRequired()])
+    event_finish_time = StringField("Bitiş Saati",validators=[validators.DataRequired()])
+    event_place = StringField("Adres",validators=[validators.DataRequired()])
+    event_photo = StringField("Fotoğraf Yolu",validators=[validators.DataRequired()])
+    event_speakers = StringField("Konuşmacı(Yönetici)",validators=[validators.DataRequired()])
+
 
 @app.route("/userregister",methods=["GET","POST"])
 def user_register():
     form = UserRegisterForm(request.form)
     if request.method == "POST" and form.validate():
-        # name = request.form.get('name')
-        # surname = request.form.get('surname')
-        # nickname = request.form.get('nickname')
-        # email = request.form.get('email')
-        # password = sha256_crypt.encrypt(request.form.get('password'))
-        # major = request.form.get('major')
-        # university = request.form.get('university')
-        # phone_number=request.form.get('phone_number')
-        # city=request.form.get('city')
-        # birthday_year=request.form.get('birthday_year')
-        
         name = form.name.data
         surname = form.surname.data
         nickname = form.nickname.data
@@ -104,9 +117,7 @@ def user_register():
         phone_number = form.phone_number.data
         city = form.city.data
         birthday_year = form.birthday_year.data
-        
-        
-        
+            
 
         cursor = mysql.connection.cursor()#Veritabanı üzerinde gerekli işlemleri yapabilmek için bir cursor oluşturduk
 
@@ -121,12 +132,35 @@ def user_register():
 
     return render_template("userregister.html",form=form)
 
-class LoginForm(Form):
-    username = StringField("Ad",validators=[validators.DataRequired()])
-    password = password = PasswordField("Parola")
+   
+@app.route("/adminregister",methods=["GET","POST"])
+def admin_register():
+    form = AdminRegisterForm(request.form)
+    if request.method == "POST" and form.validate():
+        name = form.name.data
+        surname = form.surname.data
+        username = form.username.data
+        email = form.email.data
+        password = sha256_crypt.encrypt(form.password.data)
+        position = form.position.data
+        admin_number = form.admin_number.data
+            
 
-@app.route("/login",methods=["GET","POST"])
-def login():
+        cursor = mysql.connection.cursor()#Veritabanı üzerinde gerekli işlemleri yapabilmek için bir cursor oluşturduk
+
+        query = "INSERT into yonetici(name,surname,username,email,password,position,admin_number) VALUES(%s,%s,%s,%s,%s,%s,%s)"
+        cursor.execute(query,(name,surname,username,email,password,position,admin_number))
+        
+        mysql.connection.commit()
+        cursor.close()
+        flash("Başarıyla kayıt oldunuz!","success") #Hemen bir sonraki request işleminde bu flash mesajını yayınlayabilmiş olacağız
+        return redirect(url_for("index"))
+    
+
+    return render_template("adminregister.html",form=form)
+
+@app.route("/userlogin",methods=["GET","POST"])
+def user_login():
     form = LoginForm(request.form)
     if request.method == "POST":
         username = form.username.data
@@ -151,13 +185,42 @@ def login():
             flash("Böyle bir kullanıcı bulunmuyor","danger")
             return redirect(url_for("index"))
 
-    return render_template("login.html",form=form) #Burası sadece login sayfasını döndüren bir fonksiyondur
+    return render_template("user_login.html",form=form)
 
-#Şifremi Unuttum Bölümü için Mail Kontrolü
-@app.route("/sifreyenile",methods=["GET","POST"])
-def sifreyenile():
+@app.route("/adminlogin",methods=["GET","POST"])
+def admin_login():
+    form = LoginForm(request.form)
+    if request.method == "POST":
+        username = form.username.data
+        password = form.password.data
+
+        cursor = mysql.connection.cursor()
+
+        query = "SELECT * FROM yonetici where username=%s "
+        result = cursor.execute(query,(username,))
+        if result > 0:
+            data = cursor.fetchone()
+            real_password = data["password"]
+            if sha256_crypt.verify(password,real_password):
+                flash("Başarıyla giriş yapıldı. Hoşgeldiniz","success")
+                session["logged_in"] = True #session anahtar değeri
+                session["admin_logged_in"] = True #session anahtar değeri
+                session["admin_username"] = username #session username
+                session["admin_id"] = data["id"] #session username
+                return redirect(url_for("index"))
+            else:
+                flash("Bilgierinizi yanlış girdiniz","danger")
+        else:
+            flash("Böyle bir kullanıcı bulunmuyor","danger")
+            return redirect(url_for("index"))
+
+    return render_template("admin_login.html",form=form) #Burası sadece login sayfasını döndüren bir fonksiyondur
+
+#Kullanıcılar Kısmının Şifremi Unuttum Bölümü için Mail Kontrolü
+@app.route("/kullanicisifreyenile",methods=["GET","POST"])
+def kullanici_sifreyenile():
     if request.method == "GET":
-        return render_template("sifreyenile.html")
+        return render_template("kullanici_sifreyenile.html")
     else:
         email = request.form['email']
         newpassword= request.form['newpassword']
@@ -170,7 +233,7 @@ def sifreyenile():
         real_password = data["password"]
         if sha256_crypt.verify(newpassword,real_password):
              flash("Yeni şifreniz öncekiyle aynı olamaz...","danger")
-             return redirect(url_for("sifreyenile"))
+             return redirect(url_for("kullanici_sifreyenile"))
         if newpassword == confirm:
             newpassword1 = sha256_crypt.encrypt(newpassword)            
             cursor = mysql.connection.cursor()
@@ -182,7 +245,38 @@ def sifreyenile():
                 return redirect(url_for("login"))
         else:
             flash("Hatalı Eşleşme","danger")
-            return redirect(url_for("sifreyenile"))
+            return redirect(url_for("kullanici_sifreyenile"))
+
+#Kullanıcılar Kısmının Şifremi Unuttum Bölümü için Mail Kontrolü
+@app.route("/yoneticisifreyenile",methods=["GET","POST"])
+def yonetici_sifreyenile():
+    if request.method == "GET":
+        return render_template("yonetici_sifreyenile.html")
+    else:
+        email = request.form['email']
+        newpassword= request.form['newpassword']
+        confirm = request.form['newconfirm']
+        
+        cursor2 = mysql.connection.cursor()
+        query2 = "SELECT * FROM yonetici WHERE email = %s"
+        cursor2.execute(query2,(email,)) 
+        data = cursor2.fetchone()
+        real_password = data["password"]
+        if sha256_crypt.verify(newpassword,real_password):
+             flash("Yeni şifreniz öncekiyle aynı olamaz...","danger")
+             return redirect(url_for("yonetici_sifreyenile"))
+        if newpassword == confirm:
+            newpassword1 = sha256_crypt.encrypt(newpassword)            
+            cursor = mysql.connection.cursor()
+            query = "UPDATE yonetici SET password = %s WHERE email = %s"
+            result = cursor.execute(query,(newpassword1,email))
+            if result>0:
+                flash("Şifreniz başarıyla güncellendi","success")
+                mysql.connection.commit()
+                return redirect(url_for("index"))
+        else:
+            flash("Hatalı Eşleşme","danger")
+            return redirect(url_for("yonetici_sifreyenile"))
 
 
 #logout işlemi
@@ -193,9 +287,9 @@ def logout():
     return redirect(url_for("index"))
 
 #Kullanıcı Profil Bilgileri
-@app.route("/profile/<string:id>",methods=["GET","POST"])
+@app.route("/userprofile/<string:id>",methods=["GET","POST"])
 @login_required
-def profile(id):
+def user_profile(id):
     if request.method =="GET":
         cursor = mysql.connection.cursor()
         query = "SELECT * FROM kullanicilar WHERE nickname = %s and id=%s"
@@ -204,7 +298,7 @@ def profile(id):
         if result>0:
             data = cursor.fetchone()
             # print(data)
-            return render_template("profile.html",user=data)
+            return render_template("user_profile.html",user=data)
     else:
         newname = request.form['name']
         newsurname= request.form['surname']
@@ -226,6 +320,38 @@ def profile(id):
         else:
             flash("Bir hata ile karşılaşıldı. Lütfen tekrar deneyiniz.","danger")
             return redirect(url_for("index"))
+
+#Yönetici Profil Bilgileri
+@app.route("/adminprofile/<string:id>",methods=["GET","POST"])
+@login_required
+def admin_profile(id):
+    if request.method =="GET":
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM yonetici WHERE username = %s and id=%s"
+        result = cursor.execute(query,(session["admin_username"],id))
+        # print(result2)
+        if result>0:
+            data = cursor.fetchone()
+            # print(data)
+            return render_template("admin_profile.html",admin=data)
+    else:
+        newname = request.form['name']
+        newsurname= request.form['surname']
+        newusername = request.form['username']
+        newemail = request.form['email']
+        newpassword = sha256_crypt.encrypt(request.form["password"])
+        newposition = request.form['position']
+        newadmin_number = request.form['admin_number']
+        cursor = mysql.connection.cursor()
+        sorgu = "UPDATE yonetici SET name = %s, surname = %s, username = %s, email = %s, password = %s, position = %s, admin_number = %s WHERE id = %s"
+        result = cursor.execute(sorgu,(newname,newsurname,newusername,newemail,newpassword,newposition,newadmin_number,id))
+        mysql.connection.commit()
+        if result > 0:
+            flash("Yönetici başarılı bir şekilde güncellendi","success")
+            return redirect(url_for("index"))
+        else:
+            flash("Bir hata ile karşılaşıldı. Lütfen tekrar deneyiniz.","danger")
+            return redirect(url_for("index"))
     
 @app.route("/joinevent",methods=["GET","POST"])
 @login_required    
@@ -241,6 +367,35 @@ def events():
         events = cursor.fetchall()
         cursor.close()
         return render_template("events.html",events=events)
+
+@app.route("/createevent",methods=["GET","POST"])
+@login_required
+def create_event():
+    form = EventForm(request.form)
+    if request.method == "POST" and form.validate():
+        event_company = form.event_company.data
+        event_name = form.event_name.data
+        event_description = form.event_description.data
+        event_time = form.event_time.data
+        event_start_time = form.event_start_time.data
+        event_finish_time = form.event_finish_time.data
+        event_place = form.event_place.data
+        event_photo = form.event_photo.data
+        event_speakers = form.event_speakers.data
+            
+
+        cursor = mysql.connection.cursor()#Veritabanı üzerinde gerekli işlemleri yapabilmek için bir cursor oluşturduk
+
+        query = "INSERT into etkinlikler(event_company,event_name,event_description,event_time,event_start_time,event_finish_time,event_place,event_photo,event_speakers) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        cursor.execute(query,(event_company,event_name,event_description,event_time,event_start_time,event_finish_time,event_place,event_photo,event_speakers))
+        
+        mysql.connection.commit()
+        cursor.close()
+        flash(" Başarıyla etkinlik eklendi! ","success") #Hemen bir sonraki request işleminde bu flash mesajını yayınlayabilmiş olacağız
+        return redirect(url_for("index"))
+    
+
+    return render_template("create_event.html",form=form)
 
 #Giriş Yapılmadan Etkinlikleri Görebilecek Fakat Görüntüleyemeyecek   
 @app.route("/showevents",methods=["GET","POST"]) 
