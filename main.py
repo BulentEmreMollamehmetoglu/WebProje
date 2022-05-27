@@ -382,13 +382,13 @@ def create_event():
         event_place = form.event_place.data
         event_photo = form.event_photo.data
         event_speakers = form.event_speakers.data
-            
-
+    
         cursor = mysql.connection.cursor()#Veritabanı üzerinde gerekli işlemleri yapabilmek için bir cursor oluşturduk
-
+        cursor2 = mysql.connection.cursor()
         query = "INSERT into etkinlikler(event_company,event_name,event_description,event_time,event_start_time,event_finish_time,event_place,event_photo,event_speakers) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        query2 = "INSERT into firma(company_name,company_description,company_address,company_authorized_person,company_image) VALUES(%s,%s,%s,%s,%s)"
         cursor.execute(query,(event_company,event_name,event_description,event_time,event_start_time,event_finish_time,event_place,event_photo,event_speakers))
-        
+        cursor2.execute(query2,(event_company,event_description,event_place,event_speakers,event_photo))
         mysql.connection.commit()
         cursor.close()
         flash(" Başarıyla etkinlik eklendi! ","success") #Hemen bir sonraki request işleminde bu flash mesajını yayınlayabilmiş olacağız

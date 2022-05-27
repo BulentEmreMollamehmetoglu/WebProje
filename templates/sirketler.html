@@ -1,6 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
 <style>
+              body{
+                background-image: url('https://d7rh5s3nxmpy4.cloudfront.net/temp/VngzQWlFc0J1RW89/US-000041_02.jpg');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;   
+                margin: 0;
+                border: 0;
+            }
     #goruntule {
         background-image: linear-gradient(
           to right,
@@ -37,13 +45,14 @@
       #goruntule:hover::before {
         width:100%;
       }
+
 </style>
 <h3>Şirketler</h3>
 <table class="table">
     <thead class="thead-light">
       <tr>
         <th scope="col">Şirket Adı</th>
-        <th scope="col">Şirket Adrsi</th>
+        <th scope="col">Şirket Adresi</th>
         <th scope="col">Yönetici</th>
         <th scope="col"></th>
       </tr>
@@ -53,9 +62,9 @@
     
         <tbody>
         <tr>
-            <td>{{sirket.company_name}}</td>
-            <td>{{sirket.company_address}}</td>
-            <td>{{sirket.company_authorized_person}}</td>
+            <td><b>{{sirket.company_name}}</b></td>
+            <td><b>{{sirket.company_address}}</b></td>
+            <td><b>{{sirket.company_authorized_person}}</b></td>
             <td><a href="/sirketgoster/{{sirket.company_id}}" class="btn btn-secondary" id="goruntule">Görüntüle</a></td>
         </tr>
         </tbody>
