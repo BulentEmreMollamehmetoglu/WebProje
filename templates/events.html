@@ -70,9 +70,14 @@
                     <td>{{event.event_finish_time}}</td>
                     <td>{{event.event_place}}</td>
                     <td>{{event.event_speakers}}</td>
-                    <td>
-                        <a href="/showevent/{{event.id}}" class="btn btn-success">Görüntüle</a>
-                    </td>
+                    {% if session["admin_logged_in"] %}
+                    
+                    {% else %}
+                        <td>
+                            <a href="/showevent/{{event.id}}" class="btn btn-success">Görüntüle</a>
+                        </td>
+                    {% endif %}
+                   
                     
                 </tr>
             </tbody>

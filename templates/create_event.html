@@ -1,0 +1,140 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+{% from "includes/formhelpers.html" import render_field %}
+<h3 style="color:black">Etkinlik Oluşturma Sayfası</h3>
+
+
+
+
+<style>
+@import url('https://wallpaperaccess.com/full/1198415.jpg');
+body{
+    background-image: url('');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;   
+    margin: 0;
+    border: 0;
+}
+.main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+.login-box{
+background: rgba(0, 0, 0, 0.36);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(15px);
+border: 1px solid rgba(214, 208, 208, 0.3);
+height: 850px;
+width: 450px;
+margin: -1;
+}
+.text-login p{
+    color: white;
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+}
+.text-login span{
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    color: rgb(212, 212, 212);
+}
+.text-login{
+    text-align: center;
+}
+form{
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+}
+.login-form{
+    margin-top: 30px;
+}
+.form-controll{
+    margin-top: 20px;
+    width: 300px;
+    font-family: 'Quicksand', sans-serif;
+    text-align: center;
+    color: white;
+    height: 40px;
+    border: #00000033 1px solid;
+    font-size: 20px;
+    border-radius: 15px;
+    background-color: #C2A5CB;
+}
+.form-control::placeholder{
+    text-align: center;
+    font-size: 18px;
+    font-family: 'Quicksand', sans-serif;
+    color:rgb(196, 196, 196);
+}
+.form-control:focus{
+    outline: none;
+}
+.form-enter{
+    margin-top: 20px;
+    width: 150px;
+    font-weight: bold;
+    height: 45px;
+    border-radius: 10px;
+    background:white;
+    font-family: 'Quicksand', sans-serif;
+    border: transparent 1px solid;
+}
+hr{
+    width: 60%;
+    margin-top: 40px;
+}
+.social-login p{
+    color: white;
+    font-family: 'Quicksand', sans-serif;
+    text-align: center;
+    text-transform: capitalize;
+}
+.social-links{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.fab{
+    color:white;
+    border-radius: 20px;
+    font-size: 40px;
+    width: 50px;
+    height: 50px;
+} </style>
+
+{% from "includes/formhelpers.html" import render_field %}
+    <div>
+        <form method="post">
+            {{ render_field(form.event_company) }}
+            {{ render_field(form.event_name) }}
+            {{ render_field(form.event_description) }}
+            {{ render_field(form.event_time) }}
+            {{ render_field(form.event_start_time) }}
+            {{ render_field(form.event_finish_time) }}
+            {{ render_field(form.event_place)}}
+            {{ render_field(form.event_photo)}}
+            {{ render_field(form.event_speakers)}}
+               
+            <button type="submit" class="btn btn-danger">Kayıt Ol</button>
+          </form> 
+    </div>
+   
+
+</body>
+
+
+
+
+{% endblock %}

@@ -28,16 +28,22 @@
         {{event.event_description}}
     </textarea>
 
-    {% if session["same_id"] %}
-    <div>
-        <a href="#" class="btn btn-danger">Başvuruldu</a>
-        <a href="/basvuruiptal/{{event.id}}" class="btn btn-primary">İptal Et</a>
-    </div>
+    {% if session["admin_logged_in"] %}
+            
     {% else %}
-        <div>
-            <a href="/etkinlikbasvur/{{event.id}}" class="btn btn-success" id="basvur">Başvur</a>
-        </div>
+        {% if session["same_id"] %}
+            <div>
+                <a href="#" class="btn btn-danger">Başvuruldu</a>
+                <a href="/basvuruiptal/{{event.id}}" class="btn btn-primary">İptal Et</a>
+            </div>
+        {% else %}
+            <div>
+                <a href="/etkinlikbasvur/{{event.id}}" class="btn btn-success" id="basvur">Başvur</a>
+            </div>
+        {% endif %}
     {% endif %}
+
+    
 
     
 </div>
