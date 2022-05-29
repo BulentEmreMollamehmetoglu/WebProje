@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<style>
+  body{
+    background-image: url('');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;   
+    margin: 0;
+    border: 0;
+}
+.row{
+  margin-top:-81px;
+}
+</style>
+<div>
+  <h3>Hoşgeldin "{{session["username"]}}"</h3>
+  <br>
+</div>
+
+
+
+
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+      <h3>Düzenlenecek Etkinlik Bilgileri</h3>
+      <div class="card card-body">
+        <form action="/updateevent/{{event.id}}/{{event.event_speakers}}" method="POST">
+                Şirket Adı<br>
+                <input type = "text" name = "event_company" value="{{event.event_company}}" class="form-control"/><br>
+
+                Etknilik Adı<br>
+                <input type = "text" name = "event_name" value="{{event.event_name}}" class="form-control"/><br>
+
+                Etknilik Açıklaması<br>
+                <input type = "text" name = "event_description" value="{{event.event_description}}" class="form-control"/><br>
+
+                Etkinlik Zamanı<br>
+                <input type = "text" name = "event_time" value="{{event.event_time}}" class="form-control"/><br>
+
+                Etkinlik Başlangıç Zamanı<br>
+                <input type = "text" name = "event_start_time" value="{{event.event_start_time}}" class="form-control"/><br>
+
+                Etkinlik Bitiş Zamanı<br>
+                <input type = "text" name = "event_finish_time" value="{{event.event_finish_time}}" class="form-control"/><br>
+
+                Etkinlik Yeri<br>
+                <input type = "text" name = "event_place" value="{{event.event_place}}" class="form-control"/><br>
+
+                Etkinlik Fotoğraf Yolu<br>
+                <input type = "text" name = "event_photo" value="{{event.event_photo}}" class="form-control"/><br>
+
+                Etkinlik Konuşmacılar<br>
+                <input type = "text" name = "event_speakers" value="{{event.event_speakers}}" class="form-control"/><br>
+                
+            <input type = "submit" value = "Etkinlik Güncelle" class="button"/><br>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+
+
+

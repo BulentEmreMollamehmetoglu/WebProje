@@ -6,15 +6,27 @@
   
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="/about">Hakkımızda <span class="sr-only">(current)</span></a>
-        </li>
+        {% if session["logged_in"] %}
+            {% if session["admin_logged_in"] %}
+            
+            {% else %}
+
+            {% endif %}        
+        {% else %}
+          <li class="nav-item active">
+            <a class="nav-link" href="/about">Hakkımızda <span class="sr-only">(current)</span></a>
+          </li>
+        {% endif %}
+        
         {% if session["admin_logged_in"] %}
           <li class="nav-item active">
             <a class="nav-link" href="/joinevent">Etkinlikler</a>
           </li>
           <li class="nav-item active">
             <a class="nav-link" href="/createevent">Etkinlik Oluştur</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="/updateevent/{{session.admin_id}}/{{session.admin_username}}">Etkinlik Güncelle</a>
           </li>
         {% else %}
           <li class="nav-item dropdown">
@@ -25,13 +37,6 @@
               <a class="dropdown-item" href="/joinevent">Etkinliğe Katıl</a>
               {% if session["id"] %}
                 <a class="dropdown-item" href="/sertifikalar/{{session.id}}">Sertifikalarım</a>
-              {% endif %}
-              {% if session["logged_in"] %}
-              
-              {% else %}
-                <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="/showevents">Etkinlikler</a>
-                </div>
               {% endif %}
           </li>
         {% endif %}
@@ -59,7 +64,7 @@
           </li>
         {% else %}
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 50px;">
             Giriş
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -69,7 +74,7 @@
         </li>
 
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right: 60px;">
             Kayıt Ol
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">

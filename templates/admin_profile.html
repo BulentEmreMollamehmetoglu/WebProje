@@ -3,7 +3,7 @@
 {% block body %}
 <style>
   body{
-    background-image: url('');
+    background-image: url('https://www.incimages.com/uploaded_files/image/1920x1080/getty_511317200_336709.jpg');
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;   
@@ -28,11 +28,8 @@
       <h3>Yönetici Profil Bilgileri</h3>
       <div class="card card-body">
         <form action="/adminprofile/{{admin.id}}" method="POST">
-                İsim<br>
-                <input type = "text" name = "name" value="{{admin.name}}" class="form-control"/><br>
-
-                Soyisim<br>
-                <input type = "text" name = "surname" value="{{admin.surname}}" class="form-control"/><br>
+                İsim Soyisim<br>
+                <input type = "text" name = "name_surname" value="{{admin.name_surname}}" class="form-control"/><br>
 
                 Kullanıcı Adı<br>
                 <input type = "text" name = "username" value="{{admin.username}}" class="form-control"/><br>
@@ -41,7 +38,7 @@
                 <input type = "text" name = "email" value="{{admin.email}}" class="form-control"/><br>
 
                 Şifre<br>
-                <input type = "text" name = "password" value="{{admin.password}}" class="form-control"/><br>
+                <input type = "password" name = "password" value="{{admin.password}}" class="form-control"/><br>
                 
                 Pozisyon<br>
                 <input type = "text" name = "position" value="{{admin.position}}" class="form-control"/><br>
