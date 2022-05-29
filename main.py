@@ -99,7 +99,7 @@ class EventForm(Form):
     event_finish_time = StringField("Bitiş Saati",validators=[validators.DataRequired()])
     event_place = StringField("Adres",validators=[validators.DataRequired()])
     event_photo = StringField("Fotoğraf Yolu",validators=[validators.DataRequired()])
-    event_speakers = StringField("Konuşmacı(Yönetici)",validators=[validators.DataRequired()])
+    event_speakers = StringField("Konuşmacı",validators=[validators.DataRequired()])
 
 
 @app.route("/userregister",methods=["GET","POST"])
@@ -379,19 +379,30 @@ def create_event():
         event_place = form.event_place.data
         event_photo = form.event_photo.data
         event_speakers = form.event_speakers.data
-    
-        cursor = mysql.connection.cursor()#Veritabanı üzerinde gerekli işlemleri yapabilmek için bir cursor oluşturduk
-        cursor2 = mysql.connection.cursor()
-        query = "INSERT into etkinlikler(event_company,event_name,event_description,event_time,event_start_time,event_finish_time,event_place,event_photo,event_speakers) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        query2 = "INSERT into firma(company_name,company_description,company_address,company_authorized_person,company_image) VALUES(%s,%s,%s,%s,%s)"
-        cursor.execute(query,(event_company,event_name,event_description,event_time,event_start_time,event_finish_time,event_place,event_photo,event_speakers))
-        cursor2.execute(query2,(event_company,event_description,event_place,event_speakers,event_photo))
-        mysql.connection.commit()
-        cursor.close()
-        flash(" Başarıyla etkinlik eklendi! ","success") #Hemen bir sonraki request işleminde bu flash mesajını yayınlayabilmiş olacağız
-        return redirect(url_for("index"))
-    
 
+        cursor = mysql.connection.cursor()
+        cursor2 = mysql.connection.cursor()#Veritabanı üzerinde gerekli işlemleri yapabilmek için bir cursor oluşturduk
+        cursor3 = mysql.connection.cursor()
+        
+        query = "SELECT * FROM yonetici WHERE id= %s"
+        query2 = "INSERT into etkinlikler(event_company,event_name,event_description,event_time,event_start_time,event_finish_time,event_place,event_photo,event_speakers) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        query3 = "INSERT into firma(company_name,company_description,company_address,company_authorized_person,company_image) VALUES(%s,%s,%s,%s,%s)"  
+        
+        result = cursor.execute(query,(session["admin_id"],))
+        
+        if result>0:
+            data = cursor.fetchone()
+            name_surname = data["name_surname"]
+            cursor2.execute(query2,(event_company,event_name,event_description,event_time,event_start_time,event_finish_time,event_place,event_photo,event_speakers))
+            cursor3.execute(query3,(event_company,event_description,event_place,name_surname,event_photo))
+            
+            cursor.close()
+            cursor2.close()
+            cursor3.close()
+            mysql.connection.commit()
+            flash(" Başarıyla etkinlik eklendi! ","success") #Hemen bir sonraki request işleminde bu flash mesajını yayınlayabilmiş olacağız
+            return redirect(url_for("index"))
+        
     return render_template("create_event.html",form=form)
 
 #Etkinlik Güncelleme
@@ -552,10 +563,11 @@ def etkinlikler(id):
     # print(result2)
     if result>0:
         data = cursor.fetchone()
-        name_surname = data["name_surname"]
+        # name_surname = data["name_surname"]
+        company = data["company"]
         cursor2 = mysql.connection.cursor()
-        query2 = "SELECT * FROM etkinlikler where event_speakers=%s"
-        result2 = cursor2.execute(query2,(name_surname,))
+        query2 = "SELECT * FROM etkinlikler where event_company=%s"
+        result2 = cursor2.execute(query2,(company,))
         if result2>0:
             data2 = cursor2.fetchall()
             # print(data2)
@@ -565,7 +577,37 @@ def etkinlikler(id):
             return redirect(url_for("index"))   
     # return render_template("updateevent.html",events=data)
     # return render_template("sertifika.html",adsoyad=data,listeler=liste,sertifikasayi=data4)
+
+@app.route("/etkinliksil/<string:id>/<string:event_id>",methods=["GET","POST"])
+@login_required
+def etkinlik_sil(id,event_id):
+    cursor = mysql.connection.cursor()
+    cursor2 = mysql.connection.cursor()
+    cursor3 = mysql.connection.cursor()
+    cursor4 = mysql.connection.cursor()
+    query = "DELETE FROM etkinlikler where id=%s"
+    query2 = "DELETE FROM etkinlikkatilimci where etkinlik_id=%s"
+    query3 = "DELETE FROM firma where company_name = %s"
+    query4 = "SELECT * FROM yonetici WHERE id = %s"
     
+    result = cursor.execute(query4,(id,))
+    if result>0:
+        data = cursor.fetchone()
+        company = data["company"]
+        cursor2.execute(query,(event_id,))
+        cursor3.execute(query2,(event_id,)) 
+        cursor4.execute(query3,(company,))
+        mysql.connection.commit()
+        cursor.close()
+        cursor2.close()
+        cursor3.close()
+        cursor4.close()
+        flash("Etkinlik iptal edildi","info")
+        return redirect(url_for("index"))
+        
+    else:
+        flash("Böyle bir işlem yapılamıyor","danger")
+        return redirect(url_for("index"))
 
 
 @app.route("/sertifikagoruntule/<string:id>/<string:event_id>",methods=["GET","POST"])
@@ -577,11 +619,17 @@ def sertifikagoruntule(id,event_id):
     data = cursor.fetchone()
 
     cursor3 = mysql.connection.cursor()
-    query3 = "SELECT event_company,event_name,event_time,event_photo,event_speakers FROM etkinlikler WHERE id=%s"
+    cursor4 = mysql.connection.cursor()
+    query3 = "SELECT * FROM etkinlikler WHERE id=%s"
     cursor3.execute(query3,(event_id,))
     data3 = cursor3.fetchone()
+    company = data3["event_company"]
     
-    return render_template("sertifikagoruntule.html",adsoyad=data,eventNames=data3)
+    query4 = "SELECT * FROM yonetici WHERE company=%s"
+    cursor4.execute(query4,(company,))
+    data4 = cursor4.fetchone()
+    
+    return render_template("sertifikagoruntule.html",adsoyad=data,eventNames=data3,admin = data4)
 
 @app.route("/etkinlikgoruntule/<string:id>/<string:event_id>",methods=["GET","POST"])
 @login_required

@@ -25,13 +25,14 @@
                 <p style="margin-left:10px">{{event.event_company}}</p>
                 <p style="margin-left:10px">{{event.event_name}}</p>
                 <p style="margin-left:10px"><textarea name="" id="" cols="60" rows="20">{{event.event_description}}</textarea></p> 
-                <p style="margin-left:10px">{{event.event_time}}</p>
-                <p style="margin-left:10px">{{event.event_start_time}}</p>
-                <p style="margin-left:10px">{{event.event_finish_time}}</p>
-                <p style="margin-left:10px">{{event.event_place}}</p>
-                <p style="margin-left:10px">{{event.event_photo}}</p>
-                <p style="margin-left:10px">{{event.event_speakers}}</p>
+                <p style="margin-left:10px">Tarih: {{event.event_time}}</p>
+                <p style="margin-left:10px">Başlangıç Saati: {{event.event_start_time}}</p>
+                <p style="margin-left:10px">Bitiş Saati: {{event.event_finish_time}}</p>
+                <p style="margin-left:10px">Etkinliğin Gerçekleşeceği Adres: {{event.event_place}}</p>
+                <p style="margin-left:10px">Fotoğraf Yolu: {{event.event_photo}}</p>
+                <p style="margin-left:10px">Konuşmacılar: {{event.event_speakers}}</p>
                 <a href="/etkinlikgoruntule/{{session.admin_id}}/{{event.id}}" class="btn btn-success">Etkinliği Görüntüle</a>
+                <a href="/etkinliksil/{{session.admin_id}}/{{event.id}}" class="btn btn-danger">Kaldır</a>
                 <br>
             </div>
             
