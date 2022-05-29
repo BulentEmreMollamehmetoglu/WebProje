@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block body %}
+<style>
+  body{
+    background-image: url('https://cdn.wallpapersafari.com/10/16/T81QCE.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;   
+    margin: 0;
+    border: 0;
+}
+</style>
+<h3>Bilgierimi Güncelle</h3>
+
+
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+      <div class="card card-body">
+        <form action="/etkinlikgoruntule/{{session.admin_id}}/{{eventInfos.id}}" method="POST">
+                Şirket Adı<br>
+                <input type = "text" name = "event_company" value="{{eventInfos.event_company}}" class="form-control"/><br>
+
+                Etkinlik Adı<br>
+                <input type = "text" name = "event_name" value="{{eventInfos.event_name}}"  class="form-control"/><br>
+ 
+                Etkinlik Açıklaması<br>
+                <textarea name="event_description" id="" cols="47" rows="10" style="margin-left:-10px">{{eventInfos.event_description}}</textarea>
+ 
+                Etkinlik Tarihi<br>
+                <input type = "text" name = "event_time" value="{{eventInfos.event_time}}"  class="form-control"/><br>
+ 
+                Etkinlik Başlangıç Zamanı<br>
+                <input type = "text" name = "event_start_time" value="{{eventInfos.event_start_time}}"  class="form-control"/><br>
+ 
+                Etkinlik Bitiş Zamanı<br>
+                <input type = "text" name = "event_finish_time" value="{{eventInfos.event_finish_time}}"  class="form-control"/><br> 
+
+                Etkinlik Yeri<br>
+                <input type = "text" name = "event_place" value="{{eventInfos.event_place}}"  class="form-control"/><br>
+                
+                Fotoğraf Yolu<br>
+                <input type = "text" name = "event_photo" value="{{eventInfos.event_photo}}""  class="form-control"/><br>
+                
+                Konuşmacı<br>
+                <input type = "text" name = "event_speakers" value="{{eventInfos.event_speakers}}"  class="form-control"/><br>
+
+            <input type = "submit" value = "Güncelle" class="btn btn-success"/><br>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+{% endblock body %}

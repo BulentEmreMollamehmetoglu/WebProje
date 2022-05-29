@@ -395,47 +395,47 @@ def create_event():
     return render_template("create_event.html",form=form)
 
 #Etkinlik Güncelleme
-@app.route("/updateevent/<string:id>/<string:speaker>",methods=["GET","POST"])
-@login_required
-def update_event(id,speaker):
-    if request.method =="GET":
-        cursor = mysql.connection.cursor()
-        query = "SELECT * FROM yonetici WHERE id = %s"
-        result = cursor.execute(query,(id,))   
-        # print(result2)
-        if result>0:
-            data = cursor.fetchone()
-            name_surname = data["name_surname"]
-            cursor2 = mysql.connection.cursor()
-            query2 = "SELECT * FROM etkinlikler where event_speakers=%s"
-            result2 = cursor2.execute(query2,(name_surname,))
-            if result2>0:
-                data2 = cursor2.fetchone()
-                # print(data2)
-                return render_template("update_event.html",event=data2)
-            else:
-                flash("Bu yöneticinin herhangi bir etkinliği bulunmuyor...","danger")
-                return redirect(url_for("index"))
-    else:
-        newevent_company= request.form['event_company']
-        newevent_name = request.form['event_name']
-        newevent_description = request.form['event_description']
-        newevent_time = request.form['event_time']
-        newevent_start_time = request.form['event_start_time']
-        newevent_finish_time = request.form['event_finish_time']
-        newevent_place = request.form['event_place']
-        newevent_photo = request.form['event_photo']
-        newevent_speakers = request.form['event_speakers']
-        cursor = mysql.connection.cursor()
-        sorgu = "UPDATE etkinlikler SET event_company = %s, event_name = %s, event_description = %s, event_time = %s, event_start_time = %s, event_finish_time = %s, event_place = %s,event_photo = %s,event_speakers = %s WHERE event_speakers = %s"
-        result = cursor.execute(sorgu,(newevent_company,newevent_name,newevent_description,newevent_time,newevent_start_time,newevent_finish_time,newevent_place,newevent_photo,newevent_speakers,speaker))
-        mysql.connection.commit()
-        if result > 0:
-            flash("Etkinkik başarılı bir şekilde güncellendi","success")
-            return redirect(url_for("index"))
-        else:
-            flash("Bir hata ile karşılaşıldı. Lütfen tekrar deneyiniz.","danger")
-            return redirect(url_for("index"))
+# @app.route("/updateevent/<string:id>/<string:speaker>",methods=["GET","POST"])
+# @login_required
+# def update_event(id,speaker):
+#     if request.method =="GET":
+#         cursor = mysql.connection.cursor()
+#         query = "SELECT * FROM yonetici WHERE id = %s"
+#         result = cursor.execute(query,(id,))   
+#         # print(result2)
+#         if result>0:
+#             data = cursor.fetchone()
+#             name_surname = data["name_surname"]
+#             cursor2 = mysql.connection.cursor()
+#             query2 = "SELECT * FROM etkinlikler where event_speakers=%s"
+#             result2 = cursor2.execute(query2,(name_surname,))
+#             if result2>0:
+#                 data2 = cursor2.fetchall()
+#                 # print(data2)
+#                 return render_template("update_event.html",events=data2)
+#             else:
+#                 flash("Bu yöneticinin herhangi bir etkinliği bulunmuyor...","danger")
+#                 return redirect(url_for("index"))
+#     else:
+#         newevent_company= request.form['event_company']
+#         newevent_name = request.form['event_name']
+#         newevent_description = request.form['event_description']
+#         newevent_time = request.form['event_time']
+#         newevent_start_time = request.form['event_start_time']
+#         newevent_finish_time = request.form['event_finish_time']
+#         newevent_place = request.form['event_place']
+#         newevent_photo = request.form['event_photo']
+#         newevent_speakers = request.form['event_speakers']
+#         cursor = mysql.connection.cursor()
+#         sorgu = "UPDATE etkinlikler SET event_company = %s, event_name = %s, event_description = %s, event_time = %s, event_start_time = %s, event_finish_time = %s, event_place = %s,event_photo = %s,event_speakers = %s WHERE event_speakers = %s"
+#         result = cursor.execute(sorgu,(newevent_company,newevent_name,newevent_description,newevent_time,newevent_start_time,newevent_finish_time,newevent_place,newevent_photo,newevent_speakers,speaker))
+#         mysql.connection.commit()
+#         if result > 0:
+#             flash("Etkinkik başarılı bir şekilde güncellendi","success")
+#             return redirect(url_for("index"))
+#         else:
+#             flash("Bir hata ile karşılaşıldı. Lütfen tekrar deneyiniz.","danger")
+#             return redirect(url_for("index"))
 
 
 #Giriş Yapılmadan Etkinlikleri Görebilecek Fakat Görüntüleyemeyecek   
@@ -538,14 +538,32 @@ def sertifikalar(id):
             continue
         else:
             liste.append(data3)
-    
-    #Buraya gerek yok
-    # cursor4 = mysql.connection.cursor()
-    # query4 = "SELECT COUNT(etkinlik_id) as sayi FROM etkinlikkatilimci WHERE katilimci_id = %s"
-    # cursor4.execute(query4,(session["id"],))
-    # data4 = cursor4.fetchone();
     sertifika_sayi = len(liste)
     return render_template("sertifika.html",adsoyad=data,listeler=liste,sertifikasayi=sertifika_sayi)
+    # return render_template("sertifika.html",adsoyad=data,listeler=liste,sertifikasayi=data4)
+
+#Sertifika Gösterme
+@app.route("/yoneticietkinlikler/<string:id>",methods=["GET","POST"])
+@login_required
+def etkinlikler(id):
+    cursor = mysql.connection.cursor()
+    query = "SELECT * FROM yonetici WHERE id = %s"
+    result = cursor.execute(query,(id,))   
+    # print(result2)
+    if result>0:
+        data = cursor.fetchone()
+        name_surname = data["name_surname"]
+        cursor2 = mysql.connection.cursor()
+        query2 = "SELECT * FROM etkinlikler where event_speakers=%s"
+        result2 = cursor2.execute(query2,(name_surname,))
+        if result2>0:
+            data2 = cursor2.fetchall()
+            # print(data2)
+            return render_template("yonetici_etkinlikler.html",events=data2)
+        else:
+            flash("Bu yöneticinin herhangi bir etkinliği bulunmuyor...","danger")
+            return redirect(url_for("index"))   
+    # return render_template("updateevent.html",events=data)
     # return render_template("sertifika.html",adsoyad=data,listeler=liste,sertifikasayi=data4)
     
 
@@ -564,6 +582,44 @@ def sertifikagoruntule(id,event_id):
     data3 = cursor3.fetchone()
     
     return render_template("sertifikagoruntule.html",adsoyad=data,eventNames=data3)
+
+@app.route("/etkinlikgoruntule/<string:id>/<string:event_id>",methods=["GET","POST"])
+@login_required
+def etkinlikgoruntule(id,event_id):
+    if request.method=="GET":
+        cursor = mysql.connection.cursor()
+        query = "SELECT name_surname FROM yonetici WHERE id=%s"
+        cursor.execute(query,(id,))
+
+        cursor3 = mysql.connection.cursor()
+        query3 = "SELECT * FROM etkinlikler WHERE id=%s"
+        cursor3.execute(query3,(event_id,))
+        data3 = cursor3.fetchone()
+        
+        return render_template("yonetici_etkinlik_goruntule.html",eventInfos=data3)
+    else:
+        newevent_company= request.form['event_company']
+        newevent_name= request.form['event_name']
+        newevent_description = request.form['event_description']
+        newevent_time = request.form['event_time']
+        newevent_start_time = request.form['event_start_time']
+        newevent_finish_time= request.form['event_finish_time']
+        newevent_place = request.form['event_place']
+        newevent_photo = request.form['event_photo']
+        newevent_speakers = request.form['event_speakers']
+        cursor = mysql.connection.cursor()
+        sorgu = "UPDATE etkinlikler SET event_company = %s, event_name = %s, event_description = %s, event_time = %s, event_start_time = %s, event_finish_time = %s, event_place = %s , event_photo = %s , event_speakers = %s  WHERE id = %s"
+        result = cursor.execute(sorgu,(newevent_company,newevent_name,newevent_description,newevent_time,newevent_start_time,newevent_finish_time,newevent_place,newevent_photo,newevent_speakers,event_id))
+        mysql.connection.commit()
+        if result > 0:
+            flash("Yönetici başarılı bir şekilde güncellendi","success")
+            return redirect(url_for("index"))
+        else:
+            flash("Bir hata ile karşılaşıldı. Lütfen tekrar deneyiniz.","danger")
+            return redirect(url_for("index"))
+        
+
+
 
 @app.route("/companies")
 def sirketler():

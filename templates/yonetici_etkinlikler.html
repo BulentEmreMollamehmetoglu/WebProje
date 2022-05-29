@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block body %}
+<style>
+    body{
+        background-image: url('https://wallpaperaccess.com/full/656669.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;   
+        margin: 0;
+        border: 0;
+    }
+    #namesurname{
+        font-size:25px;
+    }
+    p{
+        color:dark;
+        font-size:17px;
+    }
+</style>
+ 
+    <br>
+    <div>
+        {% for event in events %}
+            <div style="border:solid;">
+                <p style="margin-left:10px">{{event.event_company}}</p>
+                <p style="margin-left:10px">{{event.event_name}}</p>
+                <p style="margin-left:10px"><textarea name="" id="" cols="60" rows="20">{{event.event_description}}</textarea></p> 
+                <p style="margin-left:10px">{{event.event_time}}</p>
+                <p style="margin-left:10px">{{event.event_start_time}}</p>
+                <p style="margin-left:10px">{{event.event_finish_time}}</p>
+                <p style="margin-left:10px">{{event.event_place}}</p>
+                <p style="margin-left:10px">{{event.event_photo}}</p>
+                <p style="margin-left:10px">{{event.event_speakers}}</p>
+                <a href="/etkinlikgoruntule/{{session.admin_id}}/{{event.id}}" class="btn btn-success">Etkinliği Görüntüle</a>
+                <br>
+            </div>
+            
+        {% endfor %}
+    </div>
+
+
+{% endblock %}
