@@ -31,19 +31,19 @@ def login_required(f):
             return f(*args, **kwargs)
         else:
             flash("Bu sayfayı görüntülemek için lütfen giriş yapın","danger")
-            return redirect(url_for("login"))
+            return redirect(url_for("index"))
     return decorated_function
 
-#Burası şuan kullanılmıyor
-def mail_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if "checkmail" in session:
-            return f(*args, **kwargs)
-        else:
-            flash("Bu sayfayı görüntülemek için lütfen emailinizi girin","danger")
-            return redirect(url_for("login"))
-    return decorated_function
+# #Burası şuan kullanılmıyor
+# def mail_required(f):
+#     @wraps(f)
+#     def decorated_function(*args, **kwargs):
+#         if "checkmail" in session:
+#             return f(*args, **kwargs)
+#         else:
+#             flash("Bu sayfayı görüntülemek için lütfen emailinizi girin","danger")
+#             return redirect(url_for("login"))
+#     return decorated_function
 
 
 @app.route("/about")
@@ -75,8 +75,7 @@ class UserRegisterForm(Form):
     birthday_year = StringField("Doğum Tarihi",validators=[validators.DataRequired()])
     
 class AdminRegisterForm(Form):
-    name = StringField("Ad",validators=[validators.DataRequired()])
-    surname = StringField("Soyad",validators=[validators.DataRequired()])
+    name_surname = StringField("Ad Soyad",validators=[validators.DataRequired()])
     username = StringField("Kullanıcı Adı",validators=[validators.Length(min=2,max=25),validators.DataRequired()]) #veya validators.input_required() da kullanabilirsin
     email = StringField("Mail Adresi",validators=[validators.Length(min=2,max=25),validators.DataRequired()])
     password = PasswordField("Parola",validators=[
@@ -137,8 +136,7 @@ def user_register():
 def admin_register():
     form = AdminRegisterForm(request.form)
     if request.method == "POST" and form.validate():
-        name = form.name.data
-        surname = form.surname.data
+        name_surname = form.name_surname.data
         username = form.username.data
         email = form.email.data
         password = sha256_crypt.encrypt(form.password.data)
@@ -148,8 +146,8 @@ def admin_register():
 
         cursor = mysql.connection.cursor()#Veritabanı üzerinde gerekli işlemleri yapabilmek için bir cursor oluşturduk
 
-        query = "INSERT into yonetici(name,surname,username,email,password,position,admin_number) VALUES(%s,%s,%s,%s,%s,%s,%s)"
-        cursor.execute(query,(name,surname,username,email,password,position,admin_number))
+        query = "INSERT into yonetici(name_surname,username,email,password,position,admin_number) VALUES(%s,%s,%s,%s,%s,%s)"
+        cursor.execute(query,(name_surname,username,email,password,position,admin_number))
         
         mysql.connection.commit()
         cursor.close()
@@ -242,7 +240,7 @@ def kullanici_sifreyenile():
             if result>0:
                 flash("Şifreniz başarıyla güncellendi","success")
                 mysql.connection.commit()
-                return redirect(url_for("login"))
+                return redirect(url_for("user_login"))
         else:
             flash("Hatalı Eşleşme","danger")
             return redirect(url_for("kullanici_sifreyenile"))
@@ -335,16 +333,15 @@ def admin_profile(id):
             # print(data)
             return render_template("admin_profile.html",admin=data)
     else:
-        newname = request.form['name']
-        newsurname= request.form['surname']
-        newusername = request.form['username']
+        newname_surname = request.form['name_surname']
+        newusername= request.form['username']
         newemail = request.form['email']
         newpassword = sha256_crypt.encrypt(request.form["password"])
         newposition = request.form['position']
         newadmin_number = request.form['admin_number']
         cursor = mysql.connection.cursor()
-        sorgu = "UPDATE yonetici SET name = %s, surname = %s, username = %s, email = %s, password = %s, position = %s, admin_number = %s WHERE id = %s"
-        result = cursor.execute(sorgu,(newname,newsurname,newusername,newemail,newpassword,newposition,newadmin_number,id))
+        sorgu = "UPDATE yonetici SET name_surname = %s, username = %s, email = %s, password = %s, position = %s, admin_number = %s WHERE id = %s"
+        result = cursor.execute(sorgu,(newname_surname,newusername,newemail,newpassword,newposition,newadmin_number,id))
         mysql.connection.commit()
         if result > 0:
             flash("Yönetici başarılı bir şekilde güncellendi","success")
@@ -396,6 +393,50 @@ def create_event():
     
 
     return render_template("create_event.html",form=form)
+
+#Etkinlik Güncelleme
+@app.route("/updateevent/<string:id>/<string:speaker>",methods=["GET","POST"])
+@login_required
+def update_event(id,speaker):
+    if request.method =="GET":
+        cursor = mysql.connection.cursor()
+        query = "SELECT * FROM yonetici WHERE id = %s"
+        result = cursor.execute(query,(id,))   
+        # print(result2)
+        if result>0:
+            data = cursor.fetchone()
+            name_surname = data["name_surname"]
+            cursor2 = mysql.connection.cursor()
+            query2 = "SELECT * FROM etkinlikler where event_speakers=%s"
+            result2 = cursor2.execute(query2,(name_surname,))
+            if result2>0:
+                data2 = cursor2.fetchone()
+                # print(data2)
+                return render_template("update_event.html",event=data2)
+            else:
+                flash("Bu yöneticinin herhangi bir etkinliği bulunmuyor...","danger")
+                return redirect(url_for("index"))
+    else:
+        newevent_company= request.form['event_company']
+        newevent_name = request.form['event_name']
+        newevent_description = request.form['event_description']
+        newevent_time = request.form['event_time']
+        newevent_start_time = request.form['event_start_time']
+        newevent_finish_time = request.form['event_finish_time']
+        newevent_place = request.form['event_place']
+        newevent_photo = request.form['event_photo']
+        newevent_speakers = request.form['event_speakers']
+        cursor = mysql.connection.cursor()
+        sorgu = "UPDATE etkinlikler SET event_company = %s, event_name = %s, event_description = %s, event_time = %s, event_start_time = %s, event_finish_time = %s, event_place = %s,event_photo = %s,event_speakers = %s WHERE event_speakers = %s"
+        result = cursor.execute(sorgu,(newevent_company,newevent_name,newevent_description,newevent_time,newevent_start_time,newevent_finish_time,newevent_place,newevent_photo,newevent_speakers,speaker))
+        mysql.connection.commit()
+        if result > 0:
+            flash("Etkinkik başarılı bir şekilde güncellendi","success")
+            return redirect(url_for("index"))
+        else:
+            flash("Bir hata ile karşılaşıldı. Lütfen tekrar deneyiniz.","danger")
+            return redirect(url_for("index"))
+
 
 #Giriş Yapılmadan Etkinlikleri Görebilecek Fakat Görüntüleyemeyecek   
 @app.route("/showevents",methods=["GET","POST"]) 
@@ -491,15 +532,22 @@ def sertifikalar(id):
         # print(i)#0,1
         # print(data2[i]["etkinlik_id"])#1,3
         cursor3.execute(query3,(data2[i]["etkinlik_id"],))
-        data3 = cursor3.fetchall()
-        liste.append(data3[0])
+        data3 = cursor3.fetchone()
+        print(data3)
+        if data3 == None:
+            continue
+        else:
+            liste.append(data3)
     
-    cursor4 = mysql.connection.cursor()
-    query4 = "SELECT COUNT(etkinlik_id) as sayi FROM etkinlikkatilimci WHERE katilimci_id = %s"
-    cursor4.execute(query4,(session["id"],))
-    data4 = cursor4.fetchone();
-
-    return render_template("sertifika.html",adsoyad=data,listeler=liste,sertifikasayi=data4)
+    #Buraya gerek yok
+    # cursor4 = mysql.connection.cursor()
+    # query4 = "SELECT COUNT(etkinlik_id) as sayi FROM etkinlikkatilimci WHERE katilimci_id = %s"
+    # cursor4.execute(query4,(session["id"],))
+    # data4 = cursor4.fetchone();
+    sertifika_sayi = len(liste)
+    return render_template("sertifika.html",adsoyad=data,listeler=liste,sertifikasayi=sertifika_sayi)
+    # return render_template("sertifika.html",adsoyad=data,listeler=liste,sertifikasayi=data4)
+    
 
 
 @app.route("/sertifikagoruntule/<string:id>/<string:event_id>",methods=["GET","POST"])

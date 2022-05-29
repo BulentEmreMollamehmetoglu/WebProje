@@ -117,8 +117,7 @@ hr{
 {% from "includes/formhelpers.html" import render_field %}
     <div>
         <form method="post">
-            {{ render_field(form.name) }}
-            {{ render_field(form.surname) }}
+            {{ render_field(form.name_surname) }}
             {{ render_field(form.username)}}
             {{ render_field(form.email) }}
             {{ render_field(form.password) }}
